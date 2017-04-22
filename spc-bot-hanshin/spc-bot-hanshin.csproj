@@ -59,6 +59,7 @@
     <Compile Include="RatEvaluator.cs" />
     <Compile Include="Rational.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="BotCore.cs" />
     <Compile Include="SlackBot.cs" />
   </ItemGroup>
   <ItemGroup>
