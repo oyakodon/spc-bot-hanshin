@@ -102,6 +102,7 @@ namespace spc_bot_hanshin
             };
 
             clientReady.Wait(15 * 1000); // 接続待ち
+            Thread.Sleep(3000);
             if (client.IsConnected) clientReady.Reset();
             else throw new Exception("接続に失敗しました。tokenを確認してください。");
 
@@ -114,7 +115,7 @@ namespace spc_bot_hanshin
         private void Timer_procon_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             var res = core.NoticeRemainingProcon();
-            if (client.IsConnected && res == null)
+            if (client.IsConnected && res != null)
             {
                 foreach (var channel in conf.procon_notice_channels)
                 {
