@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace spc_bot_hanshin
 {
@@ -6,8 +7,19 @@ namespace spc_bot_hanshin
     {
         static void Main(string[] args)
         {
-            new SlackBot().Run();
-            while (true) Console.ReadKey(true);
+            Console.WriteLine("###########################");
+            Console.WriteLine("##### spc-bot-hanshin #####");
+            Console.WriteLine("###########################");
+
+            try
+            {
+                var t = Task.Run(() => new SlackBot().Run());
+                t.Wait();
+            }
+            catch (AggregateException e)
+            {
+                Console.WriteLine(e.InnerException);
+            }
         }
     }
 }

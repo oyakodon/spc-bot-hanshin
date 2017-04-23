@@ -12,12 +12,27 @@ namespace spc_bot_hanshin
         /// </summary>
         public SlackBot(string filename = "config.json")
         {
-            conf = JsonMgr<Config>.Load(filename);
+            if (System.IO.File.Exists(filename))
+            {
+                conf = JsonMgr<Config>.Load(filename);
+            } else
+            {
+                var _conf = new Config();
+                _conf.token = "<YOUR BOT TOKEN HERE>";
+                _conf.next_procon = DateTime.MinValue;
+                _conf.procon_notice_time = 0;
+                _conf.manager_ids = new List<string>() { "<MANAGER USERNAME HERE>" };
+                _conf.channels = new List<string>() { "<CHANNEL HERE (without #)>" };
+                _conf.procon_notice_channels = new List<string>() { "<PROCON NOTICE CHANNEL HERE (without #)>" };
+
+                JsonMgr<Config>.Save(_conf, filename);
+                throw new Exception(string.Format("{0}を設定してください。", filename));
+            }
+
             client = new SlackSocketClient(conf.token);
+
             channel_ids = new List<string>();
             core = new BotCore(conf);
-
-            core.Botid = client.MySelf.id;
 
             // プロコン残り日数表通知用
             timer_procon = new System.Timers.Timer();
@@ -31,22 +46,21 @@ namespace spc_bot_hanshin
         public void Run()
         {
             var clientReady = new ManualResetEventSlim(false);
+            Console.WriteLine("Slackへの接続を開始します。");
 
             client.Connect((connected) =>
             {
                 clientReady.Set();
 
-                // チャンネル名 -> チャンネルid
                 client.GetChannelList(callback =>
                 {
                     client.Channels.ForEach(channel => { if (conf.channels.Contains(channel.name)) channel_ids.Add(channel.id); });
                 });
-
                 client.GetUserList(null);
-
                 timer_procon.Start();
+                core.Botid = client.MySelf.id;
 
-                Console.WriteLine("Bot launched.");
+                Console.WriteLine("起動しました。 " + DateTime.Now);
             });
 
             // メッセージ受信時に呼び出される
@@ -87,6 +101,10 @@ namespace spc_bot_hanshin
 
             };
 
+            clientReady.Wait(15 * 1000); // 接続待ち
+            if (client.IsConnected) clientReady.Reset();
+            else throw new Exception("接続に失敗しました。tokenを確認してください。");
+
             clientReady.Wait();
         }
 
@@ -109,17 +127,17 @@ namespace spc_bot_hanshin
         /// <summary>
         /// BotCore
         /// </summary>
-        private BotCore core { get; set; }
+        private static BotCore core { get; set; }
 
         /// <summary>
         /// 返事をするチャンネル一覧
         /// </summary>
-        private List<string> channel_ids { get; set; }
+        private static List<string> channel_ids { get; set; }
 
         /// <summary>
         /// プロコンの残り日数表通知用タイマー
         /// </summary>
-        private System.Timers.Timer timer_procon { get; set; }
+        private static System.Timers.Timer timer_procon { get; set; }
 
         /// <summary>
         /// Slackクライアント

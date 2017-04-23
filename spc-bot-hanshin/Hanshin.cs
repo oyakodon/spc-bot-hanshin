@@ -22,6 +22,7 @@ namespace spc_bot_hanshin
                 hdb = new HanshinDB();
                 hdb.map = new Dictionary<int, string>();
                 hdb.map[334] = "334";
+                hdb.map[29] = "33-4";
                 JsonMgr<HanshinDB>.Save(hdb, filename);
             }
 
@@ -156,6 +157,6 @@ namespace spc_bot_hanshin
         /// <summary>
         /// HanshinDB
         /// </summary>
-        private HanshinDB hdb { get; set; }
+        private static HanshinDB hdb { get; set; }
     }
 }
