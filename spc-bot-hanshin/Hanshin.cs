@@ -34,7 +34,7 @@ namespace spc_bot_hanshin
         /// </summary>
         public bool isValid(string expr)
         {
-            if (!Regex.IsMatch(expr, @"[34\+\-\*\/\(\)]")) return false;
+            if (!Regex.IsMatch(expr, @"^[34\+\-\*\/\(\)]+$")) return false;
             var arr = "334";
             int count = 0;
 

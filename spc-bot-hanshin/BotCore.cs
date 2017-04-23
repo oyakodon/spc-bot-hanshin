@@ -233,7 +233,8 @@ namespace spc_bot_hanshin
                         if (stop_cmd_count >= 2)
                         {
                             Environment.Exit(0);
-                        } else
+                        }
+                        else
                         {
                             res += "[警告] ボットを停止します。この処理は取り消すことができません。\nボットを停止する場合はもう一度stopコマンドを実行してください。(コマンドは即時実行されます。)";
                         }
@@ -286,33 +287,32 @@ namespace spc_bot_hanshin
             {
                 str = str.Replace(zenkaku_tbl[i], hankaku_tbl[i]);
             }
-
-            var re = Regex.Matches(str, @"([^0-9\+\-\*\/\(\)]+|[0-9\+\-\*\/\(\)]+)");
+            var re = Regex.Matches(str, @"[0-9\+\-\*\/\(\)]+");
 
             if (re.Count == 0) return null;
-            var res = "";
-            foreach (Match m in re)
+            var res = str;
+
+            if (re[0].Value == str)
             {
-                if (Regex.IsMatch(m.Value, @"[0-9\+\-\*\/\(\)]+"))
+                // str全体が式
+                var v = ExprToValue(str);
+                var expr = v.HasValue ? hanshin.get(v.Value) : null;
+                if (expr == null)
+                {
+                    expr = string.Format(":no_good: {0} :no_good:", str);
+                }
+                res = expr;
+            } else
+            {
+                foreach (Match m in re)
                 {
                     var v = ExprToValue(m.Value);
-                    if (v == null) return null;
-                    var expr = hanshin.get(v.Value);
-                    if (re.Count != 1) res += " (";
+                    var expr = v.HasValue ? hanshin.get(v.Value) : null;
                     if (expr == null)
                     {
-                        res += string.Format(":no_good: {0} :no_good:", m.Value);
+                        expr = string.Format(":no_good: {0} :no_good:", m.Value);
                     }
-                    else
-                    {
-                        res += expr;
-                    }
-                    if (re.Count != 1) res += ") ";
-
-                }
-                else
-                {
-                    res += m.Value;
+                    res = res.Replace(m.Value, $" ({expr}) ");
                 }
             }
 
@@ -355,12 +355,12 @@ namespace spc_bot_hanshin
         /// <summary>
         /// 全角文字対応テーブル
         /// </summary>
-        private static char[] zenkaku_tbl = { '１', '２', '３', '４', '５', '６', '７', '８', '９', '＋', 'ー', '×', '÷', '＊' };
+        private static char[] zenkaku_tbl = { '０', '１', '２', '３', '４', '５', '６', '７', '８', '９', '＋', 'ー', '－', '×', '÷', '＊', '（', '）' };
 
         /// <summary>
         /// 半角文字対応テーブル
         /// </summary>
-        private static char[] hankaku_tbl = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '*', '/', '*' };
+        private static char[] hankaku_tbl = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '-', '*', '/', '*', '(', ')' };
 
         /// <summary>
         /// サイコロ
