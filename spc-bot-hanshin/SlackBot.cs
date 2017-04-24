@@ -33,6 +33,7 @@ namespace spc_bot_hanshin
 
             channel_ids = new List<string>();
             core = new BotCore(conf);
+            IsConnected = false;
 
             // プロコン残り日数表通知用
             timer_procon = new System.Timers.Timer();
@@ -59,6 +60,8 @@ namespace spc_bot_hanshin
                 client.GetUserList(null);
                 timer_procon.Start();
                 core.Botid = client.MySelf.id;
+
+                IsConnected = true;
 
                 Console.WriteLine("起動しました。 " + DateTime.Now);
             });
@@ -102,8 +105,7 @@ namespace spc_bot_hanshin
             };
 
             clientReady.Wait(15 * 1000); // 接続待ち
-            Thread.Sleep(3000);
-            if (client.IsConnected) clientReady.Reset();
+            if (IsConnected) clientReady.Reset();
             else throw new Exception("接続に失敗しました。tokenを確認してください。");
 
             clientReady.Wait();
@@ -129,6 +131,11 @@ namespace spc_bot_hanshin
         /// BotCore
         /// </summary>
         private static BotCore core { get; set; }
+
+        /// <summary>
+        /// 接続済みかどうか
+        /// </summary>
+        private static bool IsConnected { get; set; }
 
         /// <summary>
         /// 返事をするチャンネル一覧
