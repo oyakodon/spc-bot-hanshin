@@ -51,6 +51,7 @@ namespace spc_bot_hanshin
 
             client.Connect((connected) =>
             {
+                IsConnected = true;
                 clientReady.Set();
 
                 client.GetChannelList(callback =>
@@ -60,8 +61,6 @@ namespace spc_bot_hanshin
                 client.GetUserList(null);
                 timer_procon.Start();
                 core.Botid = client.MySelf.id;
-
-                IsConnected = true;
 
                 Console.WriteLine("起動しました。 " + DateTime.Now);
             });
