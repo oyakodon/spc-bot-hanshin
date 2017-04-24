@@ -19,6 +19,14 @@ namespace spc_bot_hanshin.Tests
         }
 
         [TestMethod()]
+        public void dicedice_dice()
+        {
+            var actual = core.Respond("dicedice-dice");
+            var re = System.Text.RegularExpressions.Regex.IsMatch(actual, @"[^⚀⚁⚂⚃⚄⚅\-]");
+            Assert.IsTrue(!re, actual);
+        }
+
+        [TestMethod()]
         public void 阪神算_文の中に式が含まれている()
         {
             Assert.IsTrue(core.ExprToValue("29") == 29);

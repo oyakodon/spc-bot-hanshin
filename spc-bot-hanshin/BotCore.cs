@@ -291,32 +291,28 @@ namespace spc_bot_hanshin
 
             if (re.Count == 0) return null;
             var res = str;
+            var post = false;
 
             if (re[0].Value == str)
             {
                 // str全体が式
                 var v = ExprToValue(str);
-                var expr = v.HasValue ? hanshin.get(v.Value) : null;
-                if (expr == null)
-                {
-                    expr = string.Format(":no_good: {0} :no_good:", str);
-                }
-                res = expr;
+                if (v != null) post = true;
+                var expr = v != null ? hanshin.get(v.Value) : null;
+                res = expr == null ? $":no_good: {str} :no_good:" : expr;
             } else
             {
                 foreach (Match m in re)
                 {
                     var v = ExprToValue(m.Value);
-                    var expr = v.HasValue ? hanshin.get(v.Value) : null;
-                    if (expr == null)
-                    {
-                        expr = string.Format(":no_good: {0} :no_good:", m.Value);
-                    }
+                    if (v != null) post = true;
+                    var expr = v != null ? hanshin.get(v.Value) : null;
+                    expr = expr == null ? $":no_good: #{m.Value} :no_good:" : expr;
                     res = res.Replace(m.Value, $" ({expr}) ");
                 }
             }
 
-            return res;
+            return post ? res : null;
         }
 
         /// <summary>
