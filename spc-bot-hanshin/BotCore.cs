@@ -307,7 +307,7 @@ namespace spc_bot_hanshin
                     var v = ExprToValue(m.Value);
                     if (v != null) post = true;
                     var expr = v != null ? hanshin.get(v.Value) : null;
-                    expr = expr == null ? $":no_good: #{m.Value} :no_good:" : expr;
+                    expr = expr == null ? $":no_good: {m.Value} :no_good:" : expr;
                     res = res.Replace(m.Value, $" ({expr}) ");
                 }
             }
