@@ -60,7 +60,7 @@ namespace spc_bot_hanshin
                 });
                 client.GetUserList(null);
                 timer_procon.Start();
-                core.Botid = client.MySelf.id;
+                core.Botid = client.MySelf.name;
 
                 Console.WriteLine("起動しました。 " + DateTime.Now);
             });
