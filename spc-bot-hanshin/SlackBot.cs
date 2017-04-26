@@ -81,7 +81,7 @@ namespace spc_bot_hanshin
                 {
                     var user = client.Users.Find(u => u.id == message.user);
                     var isMgr = user != null && conf.manager_ids.Contains(user.name);
-                    var res_cmd = "<@" + client.MySelf.id + ">\n" + core.ExecuteCmd(message.text.Replace($"<{client.MySelf.id}>", "").Trim(), isDM, isMgr);
+                    var res_cmd = core.ExecuteCmd(message.text.Replace($"<@{client.MySelf.id}>", "").Trim(), isDM, isMgr);
 
                     Console.WriteLine("[ExeCmd] responce => " + res_cmd);
                     client.SendMessage(null, message.channel, res_cmd);
