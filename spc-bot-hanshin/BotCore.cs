@@ -296,12 +296,14 @@ namespace spc_bot_hanshin
             if (re[0].Value == str)
             {
                 // str全体が式
+                var isHanshin = hanshin.isValid(str);
                 var v = ExprToValue(str);
                 if (v != null) post = true;
-                var expr = v != null ? hanshin.get(v.Value) : null;
+                var expr = v != null ? ( isHanshin ? v.Value.ToString() : hanshin.get( v.Value ) ) : null;
                 res = expr == null ? $":no_good: {str} :no_good:" : expr;
             } else
             {
+                // str内に文字列と式が混在
                 foreach (Match m in re)
                 {
                     var v = ExprToValue(m.Value);
