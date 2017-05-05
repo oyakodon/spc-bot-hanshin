@@ -19,6 +19,15 @@ namespace spc_bot_hanshin.Tests
         }
 
         [TestMethod()]
+        public void メッセージ全体が阪神算なら計算した値を返す()
+        {
+            Assert.IsTrue(core.Respond( "3*3*4" ) == "36");
+            Assert.IsFalse(core.Respond("hogehoge33-4fugafuga") == "29");
+            Assert.IsTrue(core.Respond("36") == "3*3*4");
+            Assert.IsFalse(core.Respond("36") == "36");
+        }
+
+        [TestMethod()]
         public void dicedice_dice()
         {
             var actual = core.Respond("dicedice-dice");
